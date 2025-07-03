@@ -55,13 +55,6 @@ param (
   [Switch] $S3Inv,
 )
 
-# Set dem variables
-$regionId = "us-east-2"
-$awsProfile = "dal32-vbo8-ilandproduct"
-$analyticsBucket = "dal32-vbo8-ilandproduct-analytics2"
-$awsAccountId = "108782087082"
-$retainForDays = "90"
-
 # Create Analytics Bucket
 New-S3Bucket -ProfileName $awsProfile -BucketName $analyticsBucket -Region $regionId -ObjectLockEnabledForBucket $true
 
