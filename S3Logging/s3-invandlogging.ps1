@@ -23,7 +23,8 @@
 #   -awsProfile "myAWSProfile" `
 #   -analyticsBucket "us-east-2-myaccount-analytics1" `
 #   -retainForDays "90" `
-#   -Analytics -S3Inv
+#   -Analytics 
+#   -S3Inv 
 #
 # Sources
 #   Configuring Amazon S3 Inventory - Amazon Simple Storage Service  
@@ -34,7 +35,6 @@
 
 Import-Module AWS.Tools.Common, AWS.Tools.S3
 
-[CmdletBinding(DefaultParametersetName = 'None')] 
 param (
   [Parameter(Mandatory = $true)]
   [string] $regionId,
@@ -46,13 +46,13 @@ param (
   [string] $analyticsBucket,
 
   [Parameter(Mandatory = $false)]
-  [int] $retainForDays = "90",
+  [int] $retainForDays = 90,
 
   [Parameter(ParameterSetName = 'Analytics', Mandatory = $false)]
-  [Switch] $Analytics,
+  [Switch] $Analytics = $true,
 
   [Parameter(ParameterSetName = 'S3Inv', Mandatory = $false)]
-  [Switch] $S3Inv,
+  [Switch] $S3Inv = $true
 )
 
 # Create Analytics Bucket
@@ -110,6 +110,7 @@ Write-S3LifecycleConfiguration -ProfileName $awsProfile -BucketName $analyticsBu
 $buckets = Get-S3Bucket -ProfileName $awsProfile | Select-Object -ExpandProperty BucketName
 
 foreach ($bucket in $buckets) {
+  If($S3Inv){
     $inventoryConfig = @{
         ProfileName = $awsProfile
         BucketName = "arn:aws:s3:::$bucket"
@@ -124,7 +125,9 @@ foreach ($bucket in $buckets) {
     }
 
     Write-S3BucketInventoryConfiguration @inventoryConfig
-    
+  }
+
+  If($Analytics) {
     $loggingConfig = @{
         ProfileName = $awsProfile
         BucketName = $bucket
@@ -133,5 +136,5 @@ foreach ($bucket in $buckets) {
     }
     
     Write-S3BucketLogging @loggingConfig
+  }
 }
-
