@@ -135,7 +135,7 @@ foreach ($bucket in $buckets) {
         InventoryId = "1111S3Inventory"
         InventoryConfiguration_InventoryId = "1111S3Inventory"
         InventoryConfiguration_IsEnabled = $true
-        InventoryConfiguration_InventoryOptionalFields = ["Size","StorageClass","ObjectLockMode","ObjectLockRetainUntilDate"
+        InventoryConfiguration_InventoryOptionalFields = ["Size","StorageClass","ObjectLockMode","ObjectLockRetainUntilDate"]
         S3BucketDestination_BucketName = $analyticsBucket
         S3BucketDestination_Prefix = "inventory-reports/"
         S3BucketDestination_InventoryFormat = "CSV"
