@@ -52,7 +52,7 @@ param (
   [Switch] $Analytics = $true,
 
   [Parameter(ParameterSetName = 'S3Inv', Mandatory = $false)]
-  [Switch] $S3Inv = $true
+  [Switch] $S3Inv = $false
 )
 
 # Create Analytics Bucket
