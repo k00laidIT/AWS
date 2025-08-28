@@ -63,6 +63,7 @@ New-S3Bucket -ProfileName $awsProfile -BucketName $analyticsBucket -Region $regi
 $policy = @"
 {
     "Version": "2012-10-17",
+    "Id":CombinedLoggingandInventoryPolicy
     "Statement": [
         {
             "Sid": "InventoryAndLoggingBucketPolicy",
@@ -82,6 +83,23 @@ $policy = @"
                     "aws:SourceAccount": "$awsAccountId"
                 }
             }
+        },
+        {
+          "Sid": "S3ServerAccessLogsDelivery",
+          "Effect": "Allow",
+          "Principal": {
+            "Service": "logging.s3.amazonaws.com"
+          },
+          "Action": "s3:PutObject",
+          "Resource": "arn:aws:s3:::$analyticsBucket/*",
+          "Condition": {
+            "ArnLike": {
+              "aws:SourceArn": "arn:aws:s3:::*"
+            },
+            "StringEquals": {
+              "aws:SourceAccount": "$awsAccountId"
+            }
+          }
         }
     ]
 }
@@ -116,7 +134,8 @@ foreach ($bucket in $buckets) {
         BucketName = "arn:aws:s3:::$bucket"
         InventoryId = "1111S3Inventory"
         InventoryConfiguration_InventoryId = "1111S3Inventory"
-        InventoryConfiguration_IsEnabled = $true        
+        InventoryConfiguration_IsEnabled = $true
+        InventoryConfiguration_InventoryOptionalFields = ["Size","StorageClass","ObjectLockMode","ObjectLockRetainUntilDate"
         S3BucketDestination_BucketName = $analyticsBucket
         S3BucketDestination_Prefix = "inventory-reports/"
         S3BucketDestination_InventoryFormat = "CSV"
